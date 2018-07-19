@@ -1,4 +1,6 @@
 # Rasterizer-D-embed
+![license](https://img.shields.io/github/license/htfy96/rasterizer-d-embed.svg) ![status](https://img.shields.io/badge/Status-WIP-blue.svg) ![dependency](https://img.shields.io/badge/dependency-0-brightgreen.svg)
+
 
 This project aims at creating a dependency-free (no libphobos/libruntime/libc) static library for 2D graphics on embedded devices.
 
