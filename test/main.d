@@ -1,8 +1,15 @@
 module main;
 import app;
+import miniruntime.write;
 
-void main() {
+@nogc:
+nothrow:
+
+@safe
+extern(C)
+void main(int argc, char** argv) {
     int[3] arr = [1, 3, 2];
+    print_num(argc);
     sort(arr);
     assert(arr.length == 3);
     assert(arr[0] == 1);
