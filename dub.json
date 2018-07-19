@@ -31,10 +31,9 @@
         },
         {
             "name": "unittest",
-            "targetType": "executable",
+            "targetType": "staticLibrary",
             "sourcePaths": ["source", "test"],
-            "mainSourceFile": "test/main.d"
+            "postBuildCommands": ["./linktest.sh"]
         }
-
     ]
 }
