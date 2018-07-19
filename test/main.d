@@ -1,6 +1,6 @@
 module main;
 import app;
-import miniruntime.write;
+import testutil.write;
 
 @nogc:
 nothrow:

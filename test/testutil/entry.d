@@ -1,4 +1,4 @@
-module miniruntime.runtime;
+module testutil.entry;
 
 @nogc
 nothrow:

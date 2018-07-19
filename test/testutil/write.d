@@ -1,4 +1,4 @@
-module miniruntime.write;
+module testutil.write;
 
 @nogc:
 nothrow:

@@ -1,6 +1,6 @@
 module miniruntime.asrt;
 
-import miniruntime.write;
+import testutil.write;
 
 @nogc:
 nothrow:
