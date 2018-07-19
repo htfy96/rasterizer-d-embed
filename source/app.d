@@ -5,6 +5,9 @@ nothrow:
 
 @safe
 void sort(int[] arr) {
+    int[216] w = 1;
+    import std.algorithm, std.range;
+    auto r = 100.iota.stride(2).take(5);
     for(int i=0; i<arr.length; ++i)
         for (int j=i+1; j<arr.length; ++j)
             if (arr[i] > arr[j]) {
