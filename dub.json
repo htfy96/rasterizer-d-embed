@@ -6,6 +6,7 @@
 	"description": "A 2D rasterizer working with -betterC, designed for embedded devices",
 	"copyright": "Copyright © 2018, Zheng Luo",
 	"license": "BSL-1.0",
+    "targetPath": "build",
     "buildTypes": {
         "betterC": {
             "buildOptions": ["noBoundsCheck", "releaseMode", "optimize", "inline"],
