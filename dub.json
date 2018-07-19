@@ -1,0 +1,39 @@
+{
+	"name": "rasterizer-d-embed",
+	"authors": [
+		"Zheng Luo"
+	],
+	"description": "A 2D rasterizer working with -betterC, designed for embedded devices",
+	"copyright": "Copyright © 2018, Zheng Luo",
+	"license": "BSL-1.0",
+    "buildTypes": {
+        "betterC": {
+            "buildOptions": ["noBoundsCheck", "releaseMode", "optimize", "inline"],
+            "dflags": ["-betterC"],
+            "lflags": ["-nodefaultlibs", "-nostdlib"]
+        },
+        "betterC-debug": {
+            "buildOptions": ["noBoundsCheck", "debugMode", "debugInfo"],
+            "dflags": ["-betterC"],
+            "lflags": ["-nodefaultlibs", "-nostdlib"]
+        },
+        "unittest": {
+            "buildOptions": ["noBoundsCheck", "debugInfo"],
+            "dflags": ["-betterC", "-defaultlib="],
+            "lflags": ["-nodefaultlibs", "-nostdlib", "-nostdinc", "-nostartfiles"]
+        }
+    },
+    "configurations": [
+        {
+            "name": "default",
+            "targetType": "staticLibrary"
+        },
+        {
+            "name": "unittest",
+            "targetType": "executable",
+            "sourcePaths": ["source", "test"],
+            "mainSourceFile": "test/main.d"
+        }
+
+    ]
+}

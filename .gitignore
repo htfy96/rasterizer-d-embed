@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+rasterizer-d-embed.so
+rasterizer-d-embed.dylib
+rasterizer-d-embed.dll
+rasterizer-d-embed.a
+rasterizer-d-embed.lib
+rasterizer-d-embed-test-*
+*.exe
+*.o
+*.obj
+*.lst
+*.a
+/main
