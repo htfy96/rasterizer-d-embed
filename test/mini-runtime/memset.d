@@ -13,144 +13,154 @@
  */
 module miniruntime.memset;
 
-@nogc:
-nothrow:
-@trusted:
+/*
+   In -betterC mode, the compiler should use libc's memset instead of _memset32 in Dlang's
+   runtime to init memory. However, dmd incorrectly generate _memset32, so we need to polyfill it.
 
-extern (C)
-{
-    // Functions from the C library.
-    void *memcpy(void *, void *, size_t);
-}
+   Bug example: https://run.dlang.io/is/7TUsX5
+   Bug report: https://issues.dlang.org/show_bug.cgi?id=17778
+ */
+version(DigitalMars) {
 
-extern (C):
+    @nogc:
+        nothrow:
+        @trusted:
 
-short *_memset16(short *p, short value, size_t count)
-{
-    short *pstart = p;
-    short *ptop;
+        extern (C)
+        {
+            // Functions from the C library.
+            void *memcpy(void *, void *, size_t);
+        }
 
-    for (ptop = &p[count]; p < ptop; p++)
-        *p = value;
-    return pstart;
-}
+    extern (C):
 
-int *_memset32(int *p, int value, size_t count)
-{
-version (D_InlineAsm_X86)
-{
-    asm @nogc nothrow
+        short *_memset16(short *p, short value, size_t count)
+        {
+            short *pstart = p;
+            short *ptop;
+
+            for (ptop = &p[count]; p < ptop; p++)
+                *p = value;
+            return pstart;
+        }
+
+    int *_memset32(int *p, int value, size_t count)
     {
-        mov     EDI,p           ;
-        mov     EAX,value       ;
-        mov     ECX,count       ;
-        mov     EDX,EDI         ;
-        rep                     ;
-        stosd                   ;
-        mov     EAX,EDX         ;
+        version (D_InlineAsm_X86)
+        {
+            asm @nogc nothrow
+            {
+                mov     EDI,p           ;
+                mov     EAX,value       ;
+                mov     ECX,count       ;
+                mov     EDX,EDI         ;
+                rep                     ;
+                stosd                   ;
+                mov     EAX,EDX         ;
+            }
+        }
+        else
+        {
+            int *pstart = p;
+            int *ptop;
+
+            for (ptop = &p[count]; p < ptop; p++)
+                *p = value;
+            return pstart;
+        }
     }
-}
-else
-{
-    int *pstart = p;
-    int *ptop;
 
-    for (ptop = &p[count]; p < ptop; p++)
-        *p = value;
-    return pstart;
-}
-}
-
-long *_memset64(long *p, long value, size_t count)
-{
-    long *pstart = p;
-    long *ptop;
-
-    for (ptop = &p[count]; p < ptop; p++)
-        *p = value;
-    return pstart;
-}
-
-cdouble *_memset128(cdouble *p, cdouble value, size_t count)
-{
-    cdouble *pstart = p;
-    cdouble *ptop;
-
-    for (ptop = &p[count]; p < ptop; p++)
-        *p = value;
-    return pstart;
-}
-
-void[] *_memset128ii(void[] *p, void[] value, size_t count)
-{
-    void[] *pstart = p;
-    void[] *ptop;
-
-    for (ptop = &p[count]; p < ptop; p++)
-        *p = value;
-    return pstart;
-}
-
-real *_memset80(real *p, real value, size_t count)
-{
-    real *pstart = p;
-    real *ptop;
-
-    for (ptop = &p[count]; p < ptop; p++)
-        *p = value;
-    return pstart;
-}
-
-creal *_memset160(creal *p, creal value, size_t count)
-{
-    creal *pstart = p;
-    creal *ptop;
-
-    for (ptop = &p[count]; p < ptop; p++)
-        *p = value;
-    return pstart;
-}
-
-void *_memsetn(void *p, void *value, int count, size_t sizelem)
-{   void *pstart = p;
-    int i;
-
-    for (i = 0; i < count; i++)
+    long *_memset64(long *p, long value, size_t count)
     {
-        memcpy(p, value, sizelem);
-        p = cast(void *)(cast(char *)p + sizelem);
+        long *pstart = p;
+        long *ptop;
+
+        for (ptop = &p[count]; p < ptop; p++)
+            *p = value;
+        return pstart;
     }
-    return pstart;
-}
 
-float *_memsetFloat(float *p, float value, size_t count)
-{
-    float *pstart = p;
-    float *ptop;
-
-    for (ptop = &p[count]; p < ptop; p++)
-        *p = value;
-    return pstart;
-}
-
-double *_memsetDouble(double *p, double value, size_t count)
-{
-    double *pstart = p;
-    double *ptop;
-
-    for (ptop = &p[count]; p < ptop; p++)
-        *p = value;
-    return pstart;
-}
-
-version (D_SIMD)
-{
-    import core.simd;
-
-    void16* _memsetSIMD(void16 *p, void16 value, size_t count)
+    cdouble *_memset128(cdouble *p, cdouble value, size_t count)
     {
-        foreach (i; 0..count)
-            p[i] = value;
-        return p;
+        cdouble *pstart = p;
+        cdouble *ptop;
+
+        for (ptop = &p[count]; p < ptop; p++)
+            *p = value;
+        return pstart;
+    }
+
+    void[] *_memset128ii(void[] *p, void[] value, size_t count)
+    {
+        void[] *pstart = p;
+        void[] *ptop;
+
+        for (ptop = &p[count]; p < ptop; p++)
+            *p = value;
+        return pstart;
+    }
+
+    real *_memset80(real *p, real value, size_t count)
+    {
+        real *pstart = p;
+        real *ptop;
+
+        for (ptop = &p[count]; p < ptop; p++)
+            *p = value;
+        return pstart;
+    }
+
+    creal *_memset160(creal *p, creal value, size_t count)
+    {
+        creal *pstart = p;
+        creal *ptop;
+
+        for (ptop = &p[count]; p < ptop; p++)
+            *p = value;
+        return pstart;
+    }
+
+    void *_memsetn(void *p, void *value, int count, size_t sizelem)
+    {   void *pstart = p;
+        int i;
+
+        for (i = 0; i < count; i++)
+        {
+            memcpy(p, value, sizelem);
+            p = cast(void *)(cast(char *)p + sizelem);
+        }
+        return pstart;
+    }
+
+    float *_memsetFloat(float *p, float value, size_t count)
+    {
+        float *pstart = p;
+        float *ptop;
+
+        for (ptop = &p[count]; p < ptop; p++)
+            *p = value;
+        return pstart;
+    }
+
+    double *_memsetDouble(double *p, double value, size_t count)
+    {
+        double *pstart = p;
+        double *ptop;
+
+        for (ptop = &p[count]; p < ptop; p++)
+            *p = value;
+        return pstart;
+    }
+
+    version (D_SIMD)
+    {
+        import core.simd;
+
+        void16* _memsetSIMD(void16 *p, void16 value, size_t count)
+        {
+            foreach (i; 0..count)
+                p[i] = value;
+            return p;
+        }
     }
 }
