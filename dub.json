@@ -34,7 +34,10 @@
             "targetType": "staticLibrary",
             "sourcePaths": ["source", "test"],
             "postBuildCommands": ["./linktest.sh"],
-            "targetName": "test"
+            "targetName": "test",
+            "dependencies": {
+                "d-rlib": "~>0.0.1"
+            }
         }
     ]
 }
