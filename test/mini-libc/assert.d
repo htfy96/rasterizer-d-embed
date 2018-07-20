@@ -1,4 +1,4 @@
-module miniruntime.asrt;
+module minilibc.asrt;
 
 import testutil.write;
 
