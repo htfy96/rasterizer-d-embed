@@ -1,0 +1,31 @@
+version: 2
+jobs:
+    build-and-test-dmd:
+        docker:
+            - image: dlang2/dmd-circleci:2.078.0
+        steps:
+            - checkout
+            - run: sudo ls -l /dlang/dmd-2.078.0/linux && sudo ls -l /dlang/dmd-2.078.0/src
+            - run: make test
+            - run: make builddebug && ./check-no-und-symbols.sh
+            - store_artifacts:
+                path: build/
+    build-and-test-ldc:
+        docker:
+            - image: dlang2/ldc-circleci:1.10.0
+        steps:
+            - checkout
+            - run: sudo ls /dlang/ldc-1.10.0/bin /dlang/ldc-1.10.0/etc /dlang/ldc-1.10.0/import /dlang/ldc-1.10.0/lib -al # don't know why this works
+            - run: DCC=ldc2 make test
+            - run: DCC=ldc2 make builddebug && ./check-no-und-symbols.sh
+            - store_artifacts:
+                path: build/
+workflows:
+    version: 2
+    build-and-test:
+        jobs:
+            - build-and-test-dmd
+            - build-and-test-ldc
+
+
+
