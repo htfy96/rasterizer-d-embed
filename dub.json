@@ -21,7 +21,7 @@
         "unittest": {
             "buildOptions": ["noBoundsCheck", "debugInfo"],
             "dflags": ["-betterC", "-defaultlib="],
-            "lflags": ["-nodefaultlibs", "-nostdlib", "-nostdinc", "-nostartfiles"]
+            "lflags": ["-nostdlib", "--as-needed"]
         }
     },
     "configurations": [
@@ -31,13 +31,9 @@
         },
         {
             "name": "unittest",
-            "targetType": "staticLibrary",
+            "targetType": "executable",
             "sourcePaths": ["source", "test"],
-            "postBuildCommands": ["./linktest.sh"],
-            "targetName": "test",
-            "dependencies": {
-                "d-rlib": "~>0.0.1"
-            }
+            "targetName": "test"
         }
     ]
 }
